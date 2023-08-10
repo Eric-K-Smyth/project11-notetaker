@@ -4,33 +4,6 @@ let saveNoteBtn;
 let newNoteBtn;
 let noteList;
 
-const path = require('path');
-const express = require('express');
-const apiRoutes = require('./apiRoutes'); // Import the apiRoutes module
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Use the built-in express.static middleware to serve static files
-app.use(express.static('public'));
-
-// Integrate the API routes
-app.use('/api', apiRoutes);
-
-// Serve the notes.html file when accessing /notes
-app.get('/notes', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'notes.html'));
-});
-
-// Serve the index.html file for other routes
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', '..', 'index.html'));
-});
-
-app.listen(PORT, () => {
-  console.log(`App listening on PORT ${PORT}`);
-});
-
-
 if (window.location.pathname === '/notes') {
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
