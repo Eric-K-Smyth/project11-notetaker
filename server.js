@@ -1,11 +1,13 @@
 const express = require('express');
 const apiRoutes = require('./apiRoutes'); // Import the apiRoutes module
 const path = require('path');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(express.static('public'));
+app.use(bodyParser.json()); // Use bodyParser to parse JSON data
 app.use('/api', apiRoutes);
 
 app.get('/notes', (req, res) => {
