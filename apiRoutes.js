@@ -17,7 +17,6 @@ router.get('/notes', (req, res) => {
 
 router.post('/notes', (req, res) => {
   try {
-    console.log('Request Body:', req.body);
     const newNote = req.body;
 
     // Read the current notes from db.json

@@ -1,3 +1,4 @@
+// Selecting the necessary elements from the DOM
 let noteTitle;
 let noteText;
 let saveNoteBtn;
@@ -5,13 +6,14 @@ let newNoteBtn;
 let noteList;
 
 if (window.location.pathname === '/notes') {
+  // Selecting elements for note input, buttons, and note list
   noteTitle = document.querySelector('.note-title');
   noteText = document.querySelector('.note-textarea');
   saveNoteBtn = document.querySelector('.save-note');
   newNoteBtn = document.querySelector('.new-note');
   noteList = document.querySelectorAll('.list-container .list-group');
 }
-
+// Utility functions to show and hide elements
 const show = (elem) => {
   elem.style.display = 'inline';
 };
@@ -19,9 +21,9 @@ const show = (elem) => {
 const hide = (elem) => {
   elem.style.display = 'none';
 };
-
+// Store for the active note being edited or viewed
 let activeNote = {};
-
+// Fetches all notes from the server
 const getNotes = () =>
   fetch('/api/notes', {
     method: 'GET',
@@ -29,7 +31,7 @@ const getNotes = () =>
       'Content-Type': 'application/json',
     },
   });
-
+// Sends a new note to the server for saving
 const saveNote = (note) =>
   fetch('/api/notes', {
     method: 'POST',
@@ -38,7 +40,7 @@ const saveNote = (note) =>
     },
     body: JSON.stringify(note),
   });
-
+// Deletes a note from the server by its ID
 const deleteNote = (id) =>
   fetch(`/api/notes/${id}`, {
     method: 'DELETE',
@@ -46,7 +48,7 @@ const deleteNote = (id) =>
       'Content-Type': 'application/json',
     },
   });
-
+// Updates the display to show the active note's details
 const renderActiveNote = () => {
   hide(saveNoteBtn);
 
@@ -62,9 +64,8 @@ const renderActiveNote = () => {
     noteText.value = '';
   }
 };
-
+// Creates an HTML list item for a note
 const createLi = (text, delBtn = true) => {
-  console.log('Creating list item with text:', text)
   const liEl = document.createElement('li');
   liEl.classList.add('list-group-item');
 
@@ -91,21 +92,19 @@ const createLi = (text, delBtn = true) => {
 
   return liEl;
 };
-
+// Handles saving a note
 const handleNoteSave = () => {
-  console.log('Saving note:', noteTitle.value, noteText.value);
   const newNote = {
     id: Date.now(), // Generate a unique ID based on current timestamp
     title: noteTitle.value,
     text: noteText.value,
   };
-  console.log('newNote:', newNote); // Add this line for debugging
   saveNote(newNote).then(() => {
     getAndRenderNotes();
     renderActiveNote();
   });
 };
-
+// Handles deleting a note
 const handleNoteDelete = (e) => {
   e.stopPropagation();
   const note = e.target;
@@ -120,18 +119,18 @@ const handleNoteDelete = (e) => {
     renderActiveNote();
   });
 };
-
+// Handles viewing a note
 const handleNoteView = (e) => {
   e.preventDefault();
   activeNote = JSON.parse(e.target.parentElement.getAttribute('data-note'));
   renderActiveNote();
 };
-
+// Handles creating a new note view
 const handleNewNoteView = (e) => {
   activeNote = {};
   renderActiveNote();
 };
-
+// Updates the visibility of the save button
 const handleRenderSaveBtn = () => {
   if (!noteTitle.value.trim() || !noteText.value.trim()) {
     hide(saveNoteBtn);
@@ -139,7 +138,7 @@ const handleRenderSaveBtn = () => {
     show(saveNoteBtn);
   }
 };
-
+// Renders the list of notes
 const renderNoteList = async (notes) => {
   let jsonNotes = await notes.json();
   console.log(jsonNotes);
@@ -163,16 +162,16 @@ const renderNoteList = async (notes) => {
     noteListItems.forEach((note) => noteList[0].append(note));
   }
 };
-
+// Fetches and renders the list of notes
 const getAndRenderNotes = () => getNotes().then(renderNoteList);
-
+// Adding event listeners for various actions
 if (window.location.pathname === '/notes') {
   saveNoteBtn.addEventListener('click', handleNoteSave);
   newNoteBtn.addEventListener('click', handleNewNoteView);
   noteTitle.addEventListener('keyup', handleRenderSaveBtn);
   noteText.addEventListener('keyup', handleRenderSaveBtn);
 }
-
+// Initial fetching and rendering of notes
 getAndRenderNotes();
 
 
